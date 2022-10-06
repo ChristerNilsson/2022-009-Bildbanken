@@ -69,27 +69,21 @@ addResult = (tournament,filename,count,letters) ->
 	div.width = 400
 
 	img = createImg url,'bild'
-	#img.width = 400
-	console.log img
-	img.mouseClicked -> console.log 'clicked!',url
+	#img.mouseClicked -> console.log 'clicked!',@
 	img.parent div
 
 	div2 = createDiv '&nbsp;' + desc
 	div2.style 'font-size', '16px'
-	#div2.width = 400
 	div2.parent div
 
 	div3 = createDiv '&nbsp;' + filename + ' (' + -count + letters + ')'
 	div3.style 'font-size', '16px'
-	#div3.width = 400
 	div3.parent div
 
-	div4 = createDiv '&nbsp;' + '1600x900 2.7Mb © Lars OA Hedlund 2022-10-06 12:18'
+	div4 = createDiv '&nbsp;' + "© Lars OA Hedlund"
 	div4.style 'font-size', '16px'
-	#div4.width = 400
 	div4.parent div
 
 	div5 = createDiv '&nbsp;'
 	div5.style 'font-size', '16px'
-	#div5.width = 400
 	div5.parent div
