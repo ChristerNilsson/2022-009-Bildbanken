@@ -34,7 +34,7 @@ keyTyped = ->
 		clearNodes()
 		selection = search searchInput.value()
 		for [count,letters,tournament,filename] in selection
-			addResult tournament,filename,count,letters
+			addResult tournament,filename,letters
 
 preload = -> data = loadJSON './bilder.json'
 
@@ -44,7 +44,7 @@ setup = ->
 	searchInput.fontSize = 40
 	searchInput.width = 400
 
-addResult = (tournament,filename,count,letters) ->
+addResult = (tournament,filename,letters) ->
 	desc = tournament
 	year = tournament[0..3]
 	tournament = tournament.replace /\d\d\d\d-\d\d-\d\d./,''
@@ -77,7 +77,7 @@ addResult = (tournament,filename,count,letters) ->
 	div2.style 'font-size', '16px'
 	div2.parent div
 
-	div3 = createDiv '&nbsp;' + filename + ' (' + -count + letters + ')'
+	div3 = createDiv '&nbsp;' + filename + ' (' + letters + ')'
 	div3.style 'font-size', '16px'
 	div3.parent div
 
