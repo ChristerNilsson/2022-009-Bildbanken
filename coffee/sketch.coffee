@@ -17,6 +17,7 @@ search = (s) ->
 			s = ''
 			for i in range words.length
 				word = words[i]
+				if word == "" then continue
 				if tournament.includes(word) or filename.includes(word) then s += alfabet[i]
 			if s.length > 0 then res.push [-s.length,s,tournament,filename]
 	res.sort (a,b) -> if a[0] == b[0] then spaceShip a[1], b[1] else spaceShip a[0], b[0]
@@ -39,7 +40,7 @@ preload = -> data = loadJSON './bilder.json'
 
 setup = ->
 	noCanvas()
-	searchInput = createInput 'Numa Kasper'
+	searchInput = createInput 'Numa'
 	searchInput.fontSize = 40
 	searchInput.width = 400
 
@@ -68,7 +69,7 @@ addResult = (tournament,filename,count,letters) ->
 	div = createDiv ''
 	div.width = 400
 
-	img = createImg url,'bild'
+	img = createImg url,'bild',"", (img) -> img.elt.width = 300 
 	#img.mouseClicked -> console.log 'clicked!',@
 	img.parent div
 
