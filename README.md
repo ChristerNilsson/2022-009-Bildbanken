@@ -52,3 +52,9 @@ A
 B
 C
 ```
+
+## Sökning
+* Man kan hantera två eller flera ord som ett genom att binda ihop dem med ett eller flera _.
+	* Numa_Karlsson
+	* Klass_D
+	* Söker man bara på "Klass D" får man träff både på "Klass" och "D"

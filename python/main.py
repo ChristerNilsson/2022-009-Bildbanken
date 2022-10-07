@@ -10,17 +10,18 @@ def readFiles(root,datum,tournament):
 	year = datum[0:4]
 	root += "\\" + year
 	res = []
-	files = [f for f in listdir(root + "\\" + tournament + '_files\\small')]
+	tour = tournament.replace('_',' ')
+	files = [f for f in listdir(root + "\\" + tour + '_files\\small')]
 	for file in files:
 		res.append(file)
 	data[datum + ' ' + tournament] = res
 
 start = time.time()
 root = "C:\\github\\2022-009-Bildbanken"
-readFiles(root, '2022-09-17', 'Kristallens JGP\Klass AB')
-readFiles(root, '2022-09-17', 'Kristallens JGP\Klass C')
-readFiles(root, '2022-09-17', 'Kristallens JGP\Klass D')
-readFiles(root, '2022-09-17', 'Kristallens JGP\Diverse')
+readFiles(root, '2022-09-17', 'Kristallens_JGP\Klass_AB')
+readFiles(root, '2022-09-17', 'Kristallens_JGP\Klass_C')
+readFiles(root, '2022-09-17', 'Kristallens_JGP\Klass_D')
+readFiles(root, '2022-09-17', 'Kristallens_JGP\Diverse')
 readFiles(root, '2022-10-01', 'Minior-Lag-DM')
 
 for key in data:

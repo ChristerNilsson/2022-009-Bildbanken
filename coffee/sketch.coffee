@@ -1,5 +1,6 @@
 searchInput = null
 data = null
+found = 0
 
 spaceShip = (a,b) ->
 	if a < b then -1
@@ -11,29 +12,57 @@ search = (s) ->
 	alfabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 	res = []
 	words = s.split ' '
+	stat = {}
+	total = 0
 	for tournament of data
+		total += data[tournament].length
 		for filename in data[tournament]
 			count = 0
 			s = ''
 			for i in range words.length
 				word = words[i]
 				if word == "" then continue
+				#word = word.replaceAll '_',' '
+				console.log tournament,tournament.includes(word),word
 				if tournament.includes(word) or filename.includes(word) then s += alfabet[i]
-			if s.length > 0 then res.push [-s.length,s,tournament,filename]
+			if s.length > 0
+				res.push [-s.length,s,tournament,filename]
+				stat[s] = (stat[s] || 0) + 1
 	res.sort (a,b) -> if a[0] == b[0] then spaceShip a[1], b[1] else spaceShip a[0], b[0]
 	console.log new Date() - start
-	res
 
-clearNodes = ->
-	n = document.body.childNodes.length
-	for i in range n-1,5,-1
-		document.body.removeChild document.body.childNodes[i]
+	keys = _.keys stat
+	keys.sort (a,b) => if a.length == b.length then spaceShip a,b else -spaceShip a.length,b.length
+	st = []
+	antal = 0
+	for key in keys
+		st.push "#{key}:#{stat[key]}"
+		antal += stat[key]
+	[st.join(' '),"#{antal} av #{total} bilder",res]
+
+clearNodes = (antal) ->
+	for i in range antal
+		n = document.body.childNodes.length
+		document.body.removeChild document.body.childNodes[n-1]
 
 keyTyped = -> 
 	if key=='Enter'
-		clearNodes()
+		clearNodes found
+
 		selection = search searchInput.value()
-		for [count,letters,tournament,filename] in selection
+
+		found = 1 + _.size selection[2]
+
+		div = createDiv ''
+		div.width = 400
+		div0 = createDiv selection[0]
+		div0.style 'font-size', '16px'
+		div0.parent div
+		div1 = createDiv selection[1]
+		div1.style 'font-size', '16px'
+		div1.parent div
+
+		for [count,letters,tournament,filename] in selection[2]
 			addResult tournament,filename,letters
 
 preload = -> data = loadJSON './bilder.json'
@@ -48,6 +77,8 @@ addResult = (tournament,filename,letters) ->
 	desc = tournament
 	year = tournament[0..3]
 	tournament = tournament.replace /\d\d\d\d-\d\d-\d\d./,''
+	tournament = tournament.replaceAll '_',' '
+	console.log tournament
 	url = ".\\" + year + "\\" + tournament + "_files\\small\\" + filename
 
 	#desc = filename
@@ -73,15 +104,15 @@ addResult = (tournament,filename,letters) ->
 	#img.mouseClicked -> console.log 'clicked!',@
 	img.parent div
 
+	div3 = createDiv '&nbsp;' + filename
+	div3.style 'font-size', '16px'
+	div3.parent div
+
 	div2 = createDiv '&nbsp;' + desc
 	div2.style 'font-size', '16px'
 	div2.parent div
 
-	div3 = createDiv '&nbsp;' + filename + ' (' + letters + ')'
-	div3.style 'font-size', '16px'
-	div3.parent div
-
-	div4 = createDiv '&nbsp;' + "© Lars OA Hedlund"
+	div4 = createDiv '&nbsp;' + letters + " © Lars OA Hedlund"
 	div4.style 'font-size', '16px'
 	div4.parent div
 
