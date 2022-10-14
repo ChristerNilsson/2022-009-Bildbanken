@@ -1,3 +1,6 @@
+#import data from './bilder.json' assert { type: 'JSON' }
+#console.log(data);
+
 searchInput = null
 data = null
 found = 0
@@ -5,7 +8,7 @@ found = 0
 spaceShip = (a,b) ->
 	if a < b then -1
 	else if a == b then 0
-	else 1
+	else 1 
 
 search = (s) ->
 	start = new Date()
@@ -40,18 +43,18 @@ search = (s) ->
 		antal += stat[key]
 	[st.join(' '),"#{antal} av #{total} bilder",res]
 
-clearNodes = (antal) ->
-	for i in range antal
+clearNodes = (keep) ->
+	while true
 		n = document.body.childNodes.length
-		document.body.removeChild document.body.childNodes[n-1]
+		node = document.body.childNodes[n-1]
+		if node == keep.elt then return
+		document.body.removeChild node
 
 keyTyped = -> 
 	if key=='Enter'
-		clearNodes found
+		clearNodes searchInput
 
 		selection = search searchInput.value()
-
-		found = 1 + _.size selection[2]
 
 		div = createDiv ''
 		div.width = 400
@@ -62,8 +65,16 @@ keyTyped = ->
 		div1.style 'font-size', '16px'
 		div1.parent div
 
-		for [count,letters,tournament,filename] in selection[2]
-			addResult tournament,filename,letters
+		if false
+			for [count,letters,tournament,filename] in selection[2]
+				addPicture tournament,filename,letters
+		else 
+			res = {}
+			for [count,letters,tournament,filename] in selection[2]
+				res[tournament] ||= []
+				#res[tournament].push letters + ' ' + filename
+				res[tournament].push filename
+			addText res
 
 preload = -> data = loadJSON './bilder.json'
 
@@ -73,15 +84,7 @@ setup = ->
 	searchInput.fontSize = 40
 	searchInput.width = 400
 
-addResult = (tournament,filename,letters) ->
-	desc = tournament
-	year = tournament[0..3]
-	tournament = tournament.replace /\d\d\d\d-\d\d-\d\d./,''
-	tournament = tournament.replaceAll '_',' '
-	console.log tournament
-	url = ".\\" + year + "\\" + tournament + "_files\\small\\" + filename
-
-	#desc = filename
+pretty = (desc,filename) ->
 	desc = desc.replace '\\', ' '
 	filename = filename.replace '.jpg', ''
 	filename = filename.replace /\d\d\d\d-\d\d-\d\d-X-\d/,''
@@ -95,7 +98,18 @@ addResult = (tournament,filename,letters) ->
 	filename = filename.replace /klass ./i,''
 	filename = filename.replace '-X',''
 	filename = filename.replace 'KSK-JGP',''
-	filename = filename.trim()
+	filename.trim()
+
+addPicture = (tournament,filename,letters) ->
+	desc = tournament
+	year = tournament[0..3]
+	tournament = tournament.replace /\d\d\d\d-\d\d-\d\d./,''
+	tournament = tournament.replaceAll '_',' '
+	console.log tournament
+	url = ".\\" + year + "\\" + tournament + "_files\\small\\" + filename
+
+	#desc = filename
+	filename = pretty desc,filename
 
 	div = createDiv ''
 	div.width = 400
@@ -119,3 +133,26 @@ addResult = (tournament,filename,letters) ->
 	div5 = createDiv '&nbsp;'
 	div5.style 'font-size', '16px'
 	div5.parent div
+
+addText = (hash) ->
+
+	div = createDiv ''
+	div.style 'font-size', '18px'
+
+	for tournament of hash
+		console.log tournament
+		desc = tournament
+		year = desc[0..3]
+		files = hash[tournament]
+		tournament = tournament.replace /\d\d\d\d-\d\d-\d\d./,''
+		tournament = tournament.replaceAll '_',' '
+		div1 = createDiv desc
+		div1.parent div
+		for file in files
+			origFile = file
+			file = pretty desc,file
+			url = ".\\" + year + "\\" + tournament + "_files\\small\\" + origFile
+
+			a = createA url,file
+			a.style 'font-size', '14px'
+			a.parent div
